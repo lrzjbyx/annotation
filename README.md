@@ -20,6 +20,6 @@ python main.py
 #### 截图
 ![工具](pic/readme.jpg)
 
-
+---
 #### 声明
-* 数据标注团队"# annotation" 
+* 数据标注
