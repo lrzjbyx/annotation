@@ -464,6 +464,7 @@ class GraphicsEllipseRrcItem(GraphicsEllipseItem):
         r, g, b, a = configure["tag"][5]["color"]
         painter.setPen(QPen(QColor(r, g, b, a), self.lineWidth, Qt.SolidLine,Qt.SquareCap,Qt.MiterJoin))
         painter.drawArc(self.rect(),self.startAngle,self.spanAngle)
+        painter.drawArc(self.rect(),self.startAngle,self.spanAngle)
 
         # 中间 线条
         painter.setPen(QPen(QColor(0, 0, 0), 5, Qt.SolidLine))
