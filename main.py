@@ -752,6 +752,13 @@ class PhotoViewer(QtWidgets.QGraphicsView):
             region_item = self.GraphicsTypeDict[region_label_name]["graph_item"]
             # 旋转图片
             self.rotation(label["rotation"],region_item)
+
+            if "groups" not in label.items():
+                print("hhhhh")
+                continue
+
+
+
             # 分组还原
             for group in label["groups"]:
                 # 添加组
@@ -899,6 +906,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
 
     def saveGraphicsItem(self):
         print(self.RelationshipDict)
+        print(self.GraphicsTypeDict)
         # 获取全部矩形框
         entitys = {}
         for k,v in self.RelationshipDict.items():
