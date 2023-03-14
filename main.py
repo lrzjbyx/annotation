@@ -754,7 +754,22 @@ class PhotoViewer(QtWidgets.QGraphicsView):
             self.rotation(label["rotation"],region_item)
 
             if "groups" not in label.items():
-                print("hhhhh")
+                arc_item = self.GraphicsTypeDict[region_label_name]["graph_item"]
+                # 设置文本
+                arc_item.text = label["text"]
+                # 设置序列
+                arc_item.sequence = label["sequence"]
+
+                if not label["type"] == PaintType.line.value:
+                    # 设置弧度开始结束
+                    arc_item.startAngle = label["startAngle"]
+                    arc_item.spanAngle = label["spanAngle"]
+
+                arc_item.lineWidth = label["h"]
+                # 设置slider 文字
+                arc_item.slider.lineEdit.setText(label["text"])
+                # 设置序列
+                arc_item.slider.comboBox.setCurrentIndex(configure["sequence"].index(label["sequence"]))
                 continue
 
 
@@ -923,6 +938,11 @@ class PhotoViewer(QtWidgets.QGraphicsView):
         }, "label": []}
 
         for k,v in entitys.items():
+            if k is None:
+                for ii in v:
+                    result["label"].append(self.GraphicsTypeDict[ii]["graph_item"].label())
+                continue
+
             result["label"].append(self.GraphicsTypeDict[k]["graph_item"].label())
 
 
@@ -1301,6 +1321,7 @@ class AnnotationWindow(QWidget):
         self.reset()
         # self.listWidget.setCurrentIndex(self.listWidget.currentIndex().row())
         self.current_filename = self.filenames[self.listWidget.currentIndex().row()]
+        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
         self.viewer.toggleDragMode()
@@ -1319,6 +1340,7 @@ class AnnotationWindow(QWidget):
         self.listWidget.setCurrentIndex(self.listWidget.model().index(row,0))
         self.reset()
         self.current_filename = self.filenames[self.listWidget.currentIndex().row()]
+        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
         self.viewer.toggleDragMode()
@@ -1338,6 +1360,7 @@ class AnnotationWindow(QWidget):
         self.listWidget.setCurrentIndex(self.listWidget.model().index(row,0))
         self.reset()
         self.current_filename = self.filenames[self.listWidget.currentIndex().row()]
+        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
         print(self.current_filename )
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
@@ -1362,6 +1385,7 @@ class AnnotationWindow(QWidget):
 
         self.filenames = filenames
         self.current_filename = filenames[0]
+        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
 
 
 
