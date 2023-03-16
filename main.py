@@ -753,7 +753,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
             # 旋转图片
             self.rotation(label["rotation"],region_item)
 
-            if "groups" not in label.items():
+            if "groups" not in label.keys():
                 arc_item = self.GraphicsTypeDict[region_label_name]["graph_item"]
                 # 设置文本
                 arc_item.text = label["text"]
@@ -1321,7 +1321,7 @@ class AnnotationWindow(QWidget):
         self.reset()
         # self.listWidget.setCurrentIndex(self.listWidget.currentIndex().row())
         self.current_filename = self.filenames[self.listWidget.currentIndex().row()]
-        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
+        self.setWindowTitle("数据标注--[{0}...]--[{1}/{2}]".format(self.current_filename,self.listWidget.currentIndex().row()+1,len(self.filenames)))
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
         self.viewer.toggleDragMode()
@@ -1340,7 +1340,7 @@ class AnnotationWindow(QWidget):
         self.listWidget.setCurrentIndex(self.listWidget.model().index(row,0))
         self.reset()
         self.current_filename = self.filenames[self.listWidget.currentIndex().row()]
-        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
+        self.setWindowTitle("数据标注--[{0}...]--[{1}/{2}]".format(self.current_filename,self.listWidget.currentIndex().row()+1,len(self.filenames)))
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
         self.viewer.toggleDragMode()
@@ -1360,7 +1360,7 @@ class AnnotationWindow(QWidget):
         self.listWidget.setCurrentIndex(self.listWidget.model().index(row,0))
         self.reset()
         self.current_filename = self.filenames[self.listWidget.currentIndex().row()]
-        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
+        self.setWindowTitle("数据标注--[{0}...]--[{1}/{2}]".format(self.current_filename,self.listWidget.currentIndex().row()+1,len(self.filenames)))
         print(self.current_filename )
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
@@ -1385,7 +1385,7 @@ class AnnotationWindow(QWidget):
 
         self.filenames = filenames
         self.current_filename = filenames[0]
-        self.setWindowTitle("数据标注--[{0}...]".format(self.current_filename))
+        self.setWindowTitle("数据标注--[{0}...]--[{1}/{2}]".format(self.current_filename,self.listWidget.currentIndex().row()+1,len(self.filenames)))
 
 
 
