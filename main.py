@@ -17,14 +17,14 @@ from pyqt5_plugins.examplebutton import QtWidgets
 import align
 from item import *
 from linker import linker
-from listWidget import customListWidgetItem
+from listw import customListWidgetItem
 from slider import  slider
 import cv2
 from paddleocr import PaddleOCR, draw_ocr
 
 
 from config import configure
-from tableWidget import tableColorWidget, tableGraphicsWidget, tableBasicWidget
+from tablew import tableColorWidget, tableGraphicsWidget, tableBasicWidget
 from utils import loadLabelJson
 
 
@@ -1038,7 +1038,7 @@ class AnnotationWindow(QWidget):
         # align
         self.align = align.Align(configure["align_height"],configure["align_width"])
         # ocr
-        self.paddle = PaddleOCR(use_angle_cls=True, lang="ch",cls_model_dir="model/ch_ppocr_mobile_v2.0_cls_infer",det_model_dir="model/ch_PP-OCRv3_det_infer",rec_model_dir="model/ch_PP-OCRv3_rec_infer")
+        self.paddle = PaddleOCR(use_angle_cls=True, lang="ch",cls_model_dir=configure["cls_model_dir"],det_model_dir=configure["det_model_dir"],rec_model_dir=configure["rec_model_dir"])
         # self.paddle = PaddleOCR(use_angle_cls=True, lang="ch")
 
         # input directory

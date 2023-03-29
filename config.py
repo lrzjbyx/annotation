@@ -32,5 +32,8 @@ configure = {
     "linked":["上下关联", "左右关联","无关联"],
     "image_format":["bmp","jpg","png","tif","jfif"],
     "align_height":600,
-    "align_width":180
+    "align_width":180,
+    "cls_model_dir":"model/ch_ppocr_mobile_v2.0_cls_infer",
+    "det_model_dir":"model/ch_PP-OCRv3_det_infer",
+    "rec_model_dir":"model/ch_PP-OCRv3_rec_infer"
 }

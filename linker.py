@@ -81,7 +81,7 @@ from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, Q
 from PyQt5.uic import loadUi
 
 from config import configure
-from tableWidget import tableBasicWidget
+from tablew import tableBasicWidget
 
 
 # class TableWidgetDragRows(QTableWidget):
