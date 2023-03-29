@@ -20,6 +20,7 @@ from linker import linker
 from listWidget import customListWidgetItem
 from slider import  slider
 import cv2
+from paddleocr import PaddleOCR, draw_ocr
 
 
 from config import configure
@@ -358,6 +359,7 @@ class GraphicsCircleRrcItem(GraphicsCircleItem):
 
 
     def paint(self, painter, option, widget=None):
+        print(self.name)
         """
         Paint the node in the graphic view.
         """
@@ -381,7 +383,7 @@ class GraphicsCircleRrcItem(GraphicsCircleItem):
 
     def triggerSliderShow(self):
         self.slider.updateAffiliate()
-        self.slider.fitAlign()
+        # self.slider.fitAlign()
         if self.slider.isVisible():
             self.slider.hide()
         else:
@@ -461,6 +463,7 @@ class GraphicsEllipseRrcItem(GraphicsEllipseItem):
 
 
     def paint(self, painter, option, widget=None):
+        print(self.name)
         """
         Paint the node in the graphic view.
         """
@@ -1034,7 +1037,9 @@ class AnnotationWindow(QWidget):
 
         # align
         self.align = align.Align(configure["align_height"],configure["align_width"])
-
+        # ocr
+        self.paddle = PaddleOCR(use_angle_cls=True, lang="ch",cls_model_dir="model/ch_ppocr_mobile_v2.0_cls_infer",det_model_dir="model/ch_PP-OCRv3_det_infer",rec_model_dir="model/ch_PP-OCRv3_rec_infer")
+        # self.paddle = PaddleOCR(use_angle_cls=True, lang="ch")
 
         # input directory
         self.input_directory = os.path.abspath(os.curdir)

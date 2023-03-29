@@ -1,3 +1,5 @@
+import threading
+
 import cv2
 from PyQt5.QtCore import pyqtSignal, QSize, Qt
 from PyQt5.QtGui import QPixmap
@@ -5,7 +7,7 @@ from PyQt5.QtWidgets import QWidget, QSlider, QLineEdit, QComboBox
 from PyQt5.uic import loadUi
 
 import utils
-
+# from paddleocr import PaddleOCR, draw_ocr
 
 class slider(QWidget):
     updateSignal = pyqtSignal(bool)
@@ -43,6 +45,7 @@ class slider(QWidget):
         self.horizontalSlider_3.valueChanged.connect(self.spanAngle)
         self.horizontalSlider.valueChanged.connect(self.lineWidth)
         self.lineEdit.textChanged.connect(self.textEdit)
+        self.pushButton.clicked.connect(self.recognition)
 
     def startAngle(self,value):
         self.item.startAngle = value *16
@@ -95,18 +98,14 @@ class slider(QWidget):
             self.updateAffiliateSignal.emit(True)
 
 
+    def recognition(self):
+        th = threading.Thread(target=self.fitAlign)
+        th.start()
+
+
     def fitAlign(self):
-
-        line = 2
-        rectangle = 3
-        ellipse = 4
-        circle_arc = 5
-        ellipse_arc = 6
-
-        # if self.item.name in ["line","circle_arc","ellipse_arc"]
         # 将 图片转换成 ndarray
         nd = utils.qQixmapConvertNd( self.item.parent._pixmap)
-        cv2.imwrite("nd.png",nd)
         item = self.item.label()
         if item["type"] == 2:
             item["la"] = 0
@@ -124,5 +123,14 @@ class slider(QWidget):
 
         image = self.item.parent.parent.align.run(nd, item)
         xx = QPixmap(utils.ndConvertQpixmap(image)).scaled(QSize(235,73),Qt.KeepAspectRatio,Qt.SmoothTransformation)
-        cv2.imwrite("111.png",image)
         self.image_align.setPixmap(xx)
+
+        result = self.item.parent.parent.paddle.ocr(image)
+
+        label_str = ""
+        for line in result[0]:
+            label_str+=line[1][0]
+
+        self.lineEdit.setText(label_str)
+
+        # print(label_str)
