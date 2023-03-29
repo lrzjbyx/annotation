@@ -28,7 +28,9 @@ configure = {
         },
 
     ],
-    "sequence":["从左到右", "从上到下"],
-    "linked":["无关联", "上关联", "下关联","左关联","右关联","无关联"],
-    "image_format":["bmp","jpg","png","tif","jfif"]
+    "sequence":["从左到右", "从右到左","从上到下","从下到上"],
+    "linked":["上下关联", "左右关联","无关联"],
+    "image_format":["bmp","jpg","png","tif","jfif"],
+    "align_height":600,
+    "align_width":180
 }

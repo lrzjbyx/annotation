@@ -13,6 +13,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QLi
 from PyQt5.uic import loadUi
 from PyQt5.uic.properties import QtCore, QtGui
 from pyqt5_plugins.examplebutton import QtWidgets
+
+import align
 from item import *
 from linker import linker
 from listWidget import customListWidgetItem
@@ -379,6 +381,7 @@ class GraphicsCircleRrcItem(GraphicsCircleItem):
 
     def triggerSliderShow(self):
         self.slider.updateAffiliate()
+        self.slider.fitAlign()
         if self.slider.isVisible():
             self.slider.hide()
         else:
@@ -580,6 +583,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
         self._empty = True
         self._scene = QtWidgets.QGraphicsScene(self)
         self._photo = QtWidgets.QGraphicsPixmapItem()
+        self._pixmap = QPixmap()
         self._scene.addItem(self._photo)
         self.setScene(self._scene)
         self.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
@@ -993,6 +997,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
             self._empty = False
             self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
             self._photo.setPixmap(pixmap)
+            self._pixmap = pixmap
         else:
             self._empty = True
             self.setDragMode(QtWidgets.QGraphicsView.NoDrag)
@@ -1026,6 +1031,10 @@ class AnnotationWindow(QWidget):
     def __init__(self, parent=None):
         super(AnnotationWindow, self).__init__(parent)
         loadUi("./ui/main.ui", self)
+
+        # align
+        self.align = align.Align(configure["align_height"],configure["align_width"])
+
 
         # input directory
         self.input_directory = os.path.abspath(os.curdir)
@@ -1196,7 +1205,7 @@ class AnnotationWindow(QWidget):
 
 
         # 文本读取顺序
-        self.tableWidget_8 = tableBasicWidget(header=["文本顺序"])
+        self.tableWidget_8 = tableBasicWidget(header=["文本顺序s"])
         tableLayout_8 =  QHBoxLayout()
         tableLayout_8.addWidget(self.tableWidget_8)
         tableLayout_8.setContentsMargins(0,0,0,0)
