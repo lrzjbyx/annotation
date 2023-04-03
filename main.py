@@ -991,7 +991,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
                 scenerect = self.transform().mapRect(rect)
                 factor = min(viewrect.width() / scenerect.width(),
                              viewrect.height() / scenerect.height())
-                self.scale(factor, factor)
+                self.scale(factor*0.5, factor*0.5)
             self._zoom = 0
 
     def setPhoto(self, pixmap=None):
