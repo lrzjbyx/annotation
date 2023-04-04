@@ -974,9 +974,6 @@ class PhotoViewer(QtWidgets.QGraphicsView):
 
 
 
-
-
-
     def hasPhoto(self):
         return not self._empty
 
