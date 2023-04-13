@@ -19,7 +19,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
-        <string>中心拟合线宽度</string>
+        <string>行高H</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>

@@ -80,6 +80,7 @@ class GraphicsRectItem(GraphicsBasicItem):
         labelData["raws"] = []
 
         rightTable = self.linker.rightTable
+        print(rightTable.rowCount())
         for i in range(rightTable.rowCount()):
             # 获取id  cirlce_1
             id = rightTable.item(i, 0).text()
@@ -578,8 +579,13 @@ class PhotoViewer(QtWidgets.QGraphicsView):
     saveSignal = pyqtSignal(dict)
     fineTuneSignal =  pyqtSignal(bool)
     GraphicsTypeCount = [0,0,0,0,0,0,0]
+    # manage graph
     GraphicsTypeDict = {}
+    # manage relation
     RelationshipDict = {}
+    # manage raws
+    RawsDict = {}
+
     def __init__(self, parent):
         super(PhotoViewer, self).__init__(parent)
         self._zoom = 0
@@ -820,6 +826,13 @@ class PhotoViewer(QtWidgets.QGraphicsView):
                 # 保存未分组的数据
                 # for raw in group["raws"]:
                 #     pass
+                    # arc_item_name = self.paintGraphics({"type": raw["type"],
+                    #                                     "rect": QRectF(raw["rect"][0] + raw["x"],
+                    #                                                    raw["rect"][1] + raw["y"],
+                    #                                                    raw["rect"][2],
+                    #                                                    raw["rect"][3])})
+                    # arc_item = self.GraphicsTypeDict[arc_item_name]["graph_item"]
+                    # group_data["links"].append({"name": arc_item_name, "text": raw["text"]})
 
 
 
@@ -1183,6 +1196,10 @@ class AnnotationWindow(QWidget):
         tableLayout_6.addWidget(self.tableWidget_6)
         tableLayout_6.setContentsMargins(0,0,0,0)
         self.widget_6.setLayout(tableLayout_6)
+        # 允许打开上下文菜单
+        self.tableWidget_6.setContextMenuPolicy(Qt.CustomContextMenu)
+        # 绑定事件
+        self.tableWidget_6.customContextMenuRequested.connect(self.areaMenu)
 
         # 线条标注
         self.tableWidget_7 = tableGraphicsWidget(header=["线条标注"],parent=self)
@@ -1190,6 +1207,10 @@ class AnnotationWindow(QWidget):
         tableLayout_7.addWidget(self.tableWidget_7)
         tableLayout_7.setContentsMargins(0,0,0,0)
         self.widget_7.setLayout(tableLayout_7)
+        # 允许打开上下文菜单
+        self.tableWidget_7.setContextMenuPolicy(Qt.CustomContextMenu)
+        # 绑定事件
+        self.tableWidget_7.customContextMenuRequested.connect(self.arcMenu)
 
 
 
@@ -1253,6 +1274,89 @@ class AnnotationWindow(QWidget):
         QShortcut(QKeySequence(self.tr("2")), self, self.minishRatationAngleEmit)
 
         self.show()
+
+    def areaMenu(self, pos):
+        print(pos)
+
+        # 获取点击行号
+        for i in self.tableWidget_6.selectionModel().selection().indexes():
+            rowNum = i.row()
+        # 如果选择的行索引小于2，弹出上下文菜单
+        if rowNum < 2:
+            menu = QMenu()
+            item1 = menu.addAction(QIcon("res/send_forward.png"),u"上移")
+            item2 = menu.addAction(QIcon("res/bring_forward.png"),u"下移")
+            item3 = menu.addAction(QIcon("res/lock.png"),u'锁定')
+            item4 = menu.addAction(QIcon("res/key.png"),u'解锁')
+
+
+            # 转换坐标系
+            screenPos = self.tableWidget_6.mapToGlobal(pos)
+            print(screenPos)
+            # xuzhong
+            id = self.tableWidget_6.item(rowNum, 0).text()
+            graph_item = self.viewer.GraphicsTypeDict[id]["graph_item"]
+
+            # 被阻塞
+            action = menu.exec(screenPos)
+            if action == item1:
+                graph_item.setZValue(graph_item.zValue()+1)
+            elif action == item2:
+                graph_item.setZValue(graph_item.zValue()-1)
+            elif action == item3:
+                #获取id  cirlce_1
+                self.unlock(graph_item)
+
+            elif action == item4:
+                # 获取id  cirlce_1
+                self.lock(graph_item)
+            else:
+                return
+
+    def lock(self,item):
+        item.setEnabled(True)
+
+    def unlock(self,item):
+        item.setEnabled(False)
+
+
+    def arcMenu(self,pos):
+        print(pos)
+
+        # 获取点击行号
+        for i in self.tableWidget_7.selectionModel().selection().indexes():
+            rowNum = i.row()
+        # 如果选择的行索引小于2，弹出上下文菜单
+        if rowNum < 2:
+            menu = QMenu()
+            item1 = menu.addAction(QIcon("res/send_forward.png"),u"上移")
+            item2 = menu.addAction(QIcon("res/bring_forward.png"),u"下移")
+            item3 = menu.addAction(QIcon("res/lock.png"),u'锁定')
+            item4 = menu.addAction(QIcon("res/key.png"),u'解锁')
+
+            # 转换坐标系
+            screenPos = self.tableWidget_7.mapToGlobal(pos)
+            print(screenPos)
+
+            # xuzhong
+            id = self.tableWidget_7.item(rowNum, 0).text()
+            graph_item = self.viewer.GraphicsTypeDict[id]["graph_item"]
+
+            # 被阻塞
+            action = menu.exec(screenPos)
+            if action == item1:
+                graph_item.setZValue(graph_item.zValue()+1)
+            elif action == item2:
+                graph_item.setZValue(graph_item.zValue()-1)
+            elif action == item3:
+                # 获取id  cirlce_1
+                self.unlock(graph_item)
+            elif action == item4:
+                # 获取id  cirlce_1
+                self.lock(graph_item)
+            else:
+                return
+
 
     def reset(self):
         print(self.viewer.GraphicsTypeDict)
