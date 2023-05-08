@@ -5,16 +5,17 @@ import numpy as np
 from PyQt5.QtCore import QStringListModel, pyqtSignal, QPoint, QRectF, Qt, QPointF, QLineF, QObject, QEvent, \
     QItemSelectionModel, QModelIndex, QSize
 from PyQt5.QtGui import QPixmap, QBrush, QPen, QPainter, QColor, QPainterPath, QImage, QIcon, QStandardItemModel, \
-    QStandardItem, QMouseEvent, QKeySequence
+    QStandardItem, QMouseEvent, QKeySequence, QConicalGradient, QLinearGradient
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QListView, QAbstractItemView, \
     QGraphicsEllipseItem, QGraphicsItem, QGraphicsRectItem, QSlider, QHeaderView, QTreeWidgetItem, QLabel, QHBoxLayout, \
     QComboBox, QLineEdit, QTreeWidget, QTableWidgetItem, QTableWidget, QGraphicsScene, QMenu, QGraphicsView, \
-    QListWidgetItem, QShortcut, QAction
+    QListWidgetItem, QShortcut, QAction, QToolButton, QUndoStack
 from PyQt5.uic import loadUi
 from PyQt5.uic.properties import QtCore, QtGui
 from pyqt5_plugins.examplebutton import QtWidgets
 
 import align
+import scene
 from item import *
 from linker import linker
 from listw import customListWidgetItem
@@ -177,6 +178,11 @@ class GraphicsCircleItem(GraphicsBasicItem):
             if self.handleSelected is None or handle == self.handleSelected:
                 if  handle == self.handleTopMiddle or handle == self.handleBottomMiddle :
                     painter.drawEllipse(rect)
+
+
+
+
+
 
     def interactiveResize(self, mousePos):
         offset = self.handleSize + self.handleSpace
@@ -365,12 +371,37 @@ class GraphicsCircleRrcItem(GraphicsCircleItem):
         Paint the node in the graphic view.
         """
         r, g, b, a = configure["tag"][4]["color"]
-        # painter.setBrush(QBrush(QColor(r, g, b, a)))
-        painter.setPen(QPen(QColor(r, g, b, a), self.lineWidth, Qt.SolidLine,Qt.SquareCap,Qt.MiterJoin))
-        painter.drawArc(self.rect(),self.startAngle,self.spanAngle)
 
+        #  外围扇形
+        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth/2)/2,self.rect().center().y()-(self.rect().width()+self.lineWidth/2)/2,
+                         self.rect().width()+int(self.lineWidth/2),self.rect().height()+int(self.lineWidth/2))
+
+        #  内测扇形
+        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth/2)/2,self.rect().center().y()-(self.rect().width()-self.lineWidth/2)/2,
+                        self.rect().width()-int(self.lineWidth/2),self.rect().height()-int(self.lineWidth/2))
+
+
+        # 绘制圆弧
+        path1 = QPainterPath()
+        path1.moveTo(self.rect().center().x(),self.rect().center().y())
+        path1.arcTo(outRect, self.startAngle/16, (self.spanAngle)/16)
+        path1.closeSubpath()
+
+        path2 = QPainterPath()
+        path2.moveTo(self.rect().center().x(),self.rect().center().y())
+        path2.arcTo(inRect, self.startAngle/16, (self.spanAngle)/16)
+        path2.closeSubpath()
+        path = path1 - path2
+        painter.fillPath(path, QColor(r, g, b, a))
+
+
+
+
+
+        # 中心弧线
         painter.setPen(QPen(QColor(0, 0, 0), 5,Qt.SolidLine,Qt.SquareCap,Qt.MiterJoin))
         painter.drawArc(self.rect(), self.startAngle, self.spanAngle)
+
 
 
         painter.setRenderHint(QPainter.Antialiasing)
@@ -469,9 +500,34 @@ class GraphicsEllipseRrcItem(GraphicsEllipseItem):
         Paint the node in the graphic view.
         """
         r, g, b, a = configure["tag"][5]["color"]
-        painter.setPen(QPen(QColor(r, g, b, a), self.lineWidth, Qt.SolidLine,Qt.SquareCap,Qt.MiterJoin))
-        painter.drawArc(self.rect(),self.startAngle,self.spanAngle)
-        painter.drawArc(self.rect(),self.startAngle,self.spanAngle)
+
+        #  外围扇形
+        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth/2)/2,self.rect().center().y()-(self.rect().height()+self.lineWidth/2)/2,
+                         self.rect().width()+int(self.lineWidth/2),self.rect().height()+int(self.lineWidth/2))
+
+        #  内测扇形
+        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth/2)/2,self.rect().center().y()-(self.rect().height()-self.lineWidth/2)/2,
+                        self.rect().width()-int(self.lineWidth/2),self.rect().height()-int(self.lineWidth/2))
+
+
+        # 绘制圆弧
+        path1 = QPainterPath()
+        path1.moveTo(self.rect().center().x(),self.rect().center().y())
+        path1.arcTo(outRect, self.startAngle/16, (self.spanAngle)/16)
+        path1.closeSubpath()
+
+        path2 = QPainterPath()
+        path2.moveTo(self.rect().center().x(),self.rect().center().y())
+        path2.arcTo(inRect, self.startAngle/16, (self.spanAngle)/16)
+        path2.closeSubpath()
+
+
+        path3 = QPainterPath()
+        path3.addEllipse(inRect)
+        path3.closeSubpath()
+        path = path1 - path2 - path3
+        painter.fillPath(path, QColor(r, g, b, a))
+
 
         # 中间 线条
         painter.setPen(QPen(QColor(0, 0, 0), 5, Qt.SolidLine))
@@ -555,8 +611,12 @@ class GraphicsLineItem(GraphicsBasicItem):
         # 绘制直线外接区域
         r, g, b, a = configure["tag"][3]["color"]
         print(self.boundingRect())
-        painter.setPen(QPen(QColor(r, g, b, a), self.lineWidth, Qt.SolidLine,Qt.SquareCap,Qt.MiterJoin))
-        painter.drawLine(middleLeftPoint, middrightPoint)
+        painter.setPen(QPen(QColor(r, g, b, a)))
+        painter.setBrush(QBrush(QColor(r, g, b, a)))
+        rect = QRectF(middleLeftPoint.x(),middleLeftPoint.y()-self.lineWidth/2,self.rect().width(),self.lineWidth)
+        painter.drawRect(rect)
+
+
 
         # 绘制中间线
         painter.setPen(QPen(QColor(0, 0, 0), 5, Qt.SolidLine))
@@ -590,7 +650,8 @@ class PhotoViewer(QtWidgets.QGraphicsView):
         super(PhotoViewer, self).__init__(parent)
         self._zoom = 0
         self._empty = True
-        self._scene = QtWidgets.QGraphicsScene(self)
+        # self._scene = QtWidgets.QGraphicsScene(self)
+        self._scene = scene.PhotoScene(self)
         self._photo = QtWidgets.QGraphicsPixmapItem()
         self._pixmap = QPixmap()
         self._scene.addItem(self._photo)
@@ -934,6 +995,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
             self.parent.saveLabelItem(name,1)
             self.GraphicsTypeCount[5] += 1
 
+
         return name
 
 
@@ -1045,6 +1107,7 @@ class AnnotationWindow(QWidget):
         super(AnnotationWindow, self).__init__(parent)
         loadUi("./ui/main.ui", self)
 
+
         # align
         self.align = align.Align(configure["align_height"],configure["align_width"])
         # ocr
@@ -1130,19 +1193,31 @@ class AnnotationWindow(QWidget):
 
 
         # 撤销
-        self.pushButton_2.clicked.connect(lambda x:print(x))
+        self.pushButton_2.clicked.connect(self.undo)
         self.pushButton_2.setIconSize(QSize(24, 24))
         self.pushButton_2.setIcon(QIcon("res/undo.png"))
         self.pushButton_2.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.pushButton_2.setShortcut(QKeySequence.Undo)
 
         # 反撤销
-        self.pushButton_3.clicked.connect(lambda x:print(x))
+        self.pushButton_3.clicked.connect(self.redo)
         self.pushButton_3.setIconSize(QSize(24, 24))
         self.pushButton_3.setIcon(QIcon("res/anti-undo.png"))
         self.pushButton_3.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.pushButton_3.setShortcut(QKeySequence.Redo)
 
+        # help
+        self.pushButton_18.clicked.connect(lambda x:print(x))
+        self.pushButton_18.setIconSize(QSize(24, 24))
+        self.pushButton_18.setIcon(QIcon("res/help.png"))
+        self.pushButton_18.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        # pushButton_10
 
-
+        # segment anything
+        self.pushButton_20.clicked.connect(lambda x:print(x))
+        self.pushButton_20.setIconSize(QSize(24, 24))
+        self.pushButton_20.setIcon(QIcon("res/anything.png"))
+        self.pushButton_20.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         # 绘制椭圆
         self.pushButton_7.clicked.connect(self.paintEllipse)
@@ -1212,10 +1287,6 @@ class AnnotationWindow(QWidget):
         # 绑定事件
         self.tableWidget_7.customContextMenuRequested.connect(self.arcMenu)
 
-
-
-
-
         # 标签样式
         self.tableWidget_5 = tableColorWidget(header=["标签", "颜色"],parent=self)
         tableLayout =  QHBoxLayout()
@@ -1273,45 +1344,68 @@ class AnnotationWindow(QWidget):
         QShortcut(QKeySequence(self.tr("1")), self, self.enlargeRatationAngleEmit)
         QShortcut(QKeySequence(self.tr("2")), self, self.minishRatationAngleEmit)
 
+
+        self.undoStack = QUndoStack()
+        self.viewer._scene.itemChanged.connect(self.onItemMoved)
+        self.viewer._scene.addItemSignal.connect(self.onAddItem)
         self.show()
+
+
+    #
+    def onAddItem(self,item):
+        self.undoStack.push(scene.AddCommand(self.viewer._scene, item))
+        # pass
+
+    def onItemMoved(self, item, points):
+        self.undoStack.push(scene.ChangeCommand(item, points))
+        # pass
+
+    def undo(self):
+        self.undoStack.undo()
+
+    def redo(self):
+        self.undoStack.redo()
+
 
     def areaMenu(self, pos):
         print(pos)
 
+        if len(self.tableWidget_6.selectionModel().selection().indexes()) >2:
+            return
+
         # 获取点击行号
         for i in self.tableWidget_6.selectionModel().selection().indexes():
             rowNum = i.row()
-        # 如果选择的行索引小于2，弹出上下文菜单
-        if rowNum < 2:
-            menu = QMenu()
-            item1 = menu.addAction(QIcon("res/send_forward.png"),u"上移")
-            item2 = menu.addAction(QIcon("res/bring_forward.png"),u"下移")
-            item3 = menu.addAction(QIcon("res/lock.png"),u'锁定')
-            item4 = menu.addAction(QIcon("res/key.png"),u'解锁')
+
+        menu = QMenu()
+        item1 = menu.addAction(QIcon("res/send_forward.png"),u"上移")
+        item2 = menu.addAction(QIcon("res/bring_forward.png"),u"下移")
+        item3 = menu.addAction(QIcon("res/lock.png"),u'锁定')
+        item4 = menu.addAction(QIcon("res/key.png"),u'解锁')
 
 
-            # 转换坐标系
-            screenPos = self.tableWidget_6.mapToGlobal(pos)
-            print(screenPos)
-            # xuzhong
-            id = self.tableWidget_6.item(rowNum, 0).text()
-            graph_item = self.viewer.GraphicsTypeDict[id]["graph_item"]
+        # 转换坐标系
+        screenPos = self.tableWidget_6.mapToGlobal(pos)
+        print(screenPos)
+        # xuzhong
+        id = self.tableWidget_6.item(rowNum, 0).text()
+        graph_item = self.viewer.GraphicsTypeDict[id]["graph_item"]
 
-            # 被阻塞
-            action = menu.exec(screenPos)
-            if action == item1:
-                graph_item.setZValue(graph_item.zValue()+1)
-            elif action == item2:
-                graph_item.setZValue(graph_item.zValue()-1)
-            elif action == item3:
-                #获取id  cirlce_1
-                self.unlock(graph_item)
+        # 被阻塞
+        action = menu.exec(screenPos)
+        if action == item1:
+            graph_item.setZValue(graph_item.zValue()+1)
+        elif action == item2:
+            graph_item.setZValue(graph_item.zValue()-1)
+        elif action == item3:
+            #获取id  cirlce_1
+            self.unlock(graph_item)
 
-            elif action == item4:
-                # 获取id  cirlce_1
-                self.lock(graph_item)
-            else:
-                return
+        elif action == item4:
+            # 获取id  cirlce_1
+            self.lock(graph_item)
+        else:
+            return
 
     def lock(self,item):
         item.setEnabled(True)
@@ -1323,39 +1417,41 @@ class AnnotationWindow(QWidget):
     def arcMenu(self,pos):
         print(pos)
 
+        if len(self.tableWidget_7.selectionModel().selection().indexes()) > 2:
+            return
+
         # 获取点击行号
         for i in self.tableWidget_7.selectionModel().selection().indexes():
             rowNum = i.row()
-        # 如果选择的行索引小于2，弹出上下文菜单
-        if rowNum < 2:
-            menu = QMenu()
-            item1 = menu.addAction(QIcon("res/send_forward.png"),u"上移")
-            item2 = menu.addAction(QIcon("res/bring_forward.png"),u"下移")
-            item3 = menu.addAction(QIcon("res/lock.png"),u'锁定')
-            item4 = menu.addAction(QIcon("res/key.png"),u'解锁')
 
-            # 转换坐标系
-            screenPos = self.tableWidget_7.mapToGlobal(pos)
-            print(screenPos)
+        menu = QMenu()
+        item1 = menu.addAction(QIcon("res/send_forward.png"),u"上移")
+        item2 = menu.addAction(QIcon("res/bring_forward.png"),u"下移")
+        item3 = menu.addAction(QIcon("res/lock.png"),u'锁定')
+        item4 = menu.addAction(QIcon("res/key.png"),u'解锁')
 
-            # xuzhong
-            id = self.tableWidget_7.item(rowNum, 0).text()
-            graph_item = self.viewer.GraphicsTypeDict[id]["graph_item"]
+        # 转换坐标系
+        screenPos = self.tableWidget_7.mapToGlobal(pos)
+        print(screenPos)
 
-            # 被阻塞
-            action = menu.exec(screenPos)
-            if action == item1:
-                graph_item.setZValue(graph_item.zValue()+1)
-            elif action == item2:
-                graph_item.setZValue(graph_item.zValue()-1)
-            elif action == item3:
-                # 获取id  cirlce_1
-                self.unlock(graph_item)
-            elif action == item4:
-                # 获取id  cirlce_1
-                self.lock(graph_item)
-            else:
-                return
+        # xuzhong
+        id = self.tableWidget_7.item(rowNum, 0).text()
+        graph_item = self.viewer.GraphicsTypeDict[id]["graph_item"]
+
+        # 被阻塞
+        action = menu.exec(screenPos)
+        if action == item1:
+            graph_item.setZValue(graph_item.zValue()+1)
+        elif action == item2:
+            graph_item.setZValue(graph_item.zValue()-1)
+        elif action == item3:
+            # 获取id  cirlce_1
+            self.unlock(graph_item)
+        elif action == item4:
+            # 获取id  cirlce_1
+            self.lock(graph_item)
+        else:
+            return
 
 
     def reset(self):
@@ -1439,6 +1535,7 @@ class AnnotationWindow(QWidget):
         self.setWindowTitle("数据标注--[{0}...]--[{1}/{2}]".format(self.current_filename,self.listWidget.currentIndex().row()+1,len(self.filenames)))
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
+        self.undoStack.clear()
         self.viewer.toggleDragMode()
         jsonFileName = os.path.join(self.output_directory,"{0}.json".format(self.current_filename.split(".")[0]))
         if os.path.exists(jsonFileName):
@@ -1458,6 +1555,7 @@ class AnnotationWindow(QWidget):
         self.setWindowTitle("数据标注--[{0}...]--[{1}/{2}]".format(self.current_filename,self.listWidget.currentIndex().row()+1,len(self.filenames)))
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
+        self.undoStack.clear()
         self.viewer.toggleDragMode()
         jsonFileName = os.path.join(self.output_directory,"{0}.json".format(self.current_filename.split(".")[0]))
         if os.path.exists(jsonFileName):
@@ -1479,6 +1577,7 @@ class AnnotationWindow(QWidget):
         print(self.current_filename )
         self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
         self.viewer.setPhoto(self.current_pixmap)
+        self.undoStack.clear()
         self.viewer.toggleDragMode()
         jsonFileName = os.path.join(self.output_directory,"{0}.json".format(self.current_filename.split(".")[0]))
         if os.path.exists(jsonFileName):
@@ -1526,6 +1625,7 @@ class AnnotationWindow(QWidget):
             self.reset()
             self.current_pixmap = QPixmap(os.path.join(self.input_directory, self.current_filename))
             self.viewer.setPhoto(self.current_pixmap)
+            self.undoStack.clear()
             self.viewer.toggleDragMode()
 
             jsonFileName = os.path.join(self.output_directory, "{0}.json".format(self.current_filename.split(".")[0]))

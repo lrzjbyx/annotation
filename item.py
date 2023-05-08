@@ -16,6 +16,10 @@ class PaintType(Enum):
     circle_arc = 5
     ellipse_arc = 6
 
+class PaintState(Enum):
+    none = 0
+    move = 1
+    resize = 2
 
 
 
@@ -49,6 +53,7 @@ class GraphicsBasicItem(QGraphicsRectItem):
         """
         self.parent = parent
         self.name = name
+        self.state = PaintState.none
         super().__init__(*args)
         self.handles = {}
         self.handleSelected = None
@@ -109,8 +114,10 @@ class GraphicsBasicItem(QGraphicsRectItem):
         Executed when the mouse is being moved over the item while being pressed.
         """
         if self.handleSelected is not None:
+            self.state = PaintState.resize
             self.interactiveResize(mouseEvent.pos())
         else:
+            self.state = PaintState.move
             super().mouseMoveEvent(mouseEvent)
 
     def mouseReleaseEvent(self, mouseEvent):
@@ -122,6 +129,12 @@ class GraphicsBasicItem(QGraphicsRectItem):
         self.mousePressPos = None
         self.mousePressRect = None
         self.update()
+
+        if self.state == PaintState.resize:
+            print("resize")
+            self.parent._scene.itemChanged.emit(self, {})
+            self.state = PaintState.none
+
 
     def boundingRect(self):
         """
@@ -203,7 +216,7 @@ class GraphicsBasicItem(QGraphicsRectItem):
             self.setRect(rect)
 
         elif self.handleSelected == self.handleMiddleRight:
-            print("MR")
+            # print("MR")
             fromX = self.mousePressRect.right()
             toX = fromX + mousePos.x() - self.mousePressPos.x()
             diff.setX(toX - fromX)
