@@ -1,6 +1,5 @@
 # annotation
-数据标注工具
-
+数据标注工具（矩形衍生标注）
 
 ---
 #### 使用
@@ -9,6 +8,8 @@ python main.py
 ```
 #### 安装
 ```python
+conda create -n paint python==3.8
+conda activate paint
 pip install -r requirements.txt
 ```
 #### 配置
@@ -46,23 +47,23 @@ configure = {
     "sequence":["从左到右", "从右到左","从上到下","从下到上"],
     "linked":["上下关联", "左右关联","无关联"],
     "image_format":["bmp","jpg","png","tif","jfif"],
-    "align_height":600,
+    "align_height":600, 
     "align_width":180,
+    # 讯飞ocr模型
     "cls_model_dir":"model/ch_ppocr_mobile_v2.0_cls_infer",
     "det_model_dir":"model/ch_PP-OCRv3_det_infer",
-    "rec_model_dir":"model/ch_PP-OCRv3_rec_infer"
+    "rec_model_dir":"model/ch_PP-OCRv3_rec_infer"  
 }
 ```
----
+
 #### 功能
 * 矩形多角度标注
 * 圆/椭圆多角度标注
 * 圆弧/椭圆弧标注
 * 曲线文字对齐
 * OCR 文字识别
+* ~~segment anything 接入~~
 
-
----
 
 #### 截图
 ![工具](pic/readme.jpg)
@@ -165,7 +166,7 @@ ellipse_arc = 6
   ]
 }
 ```
-> ***矩形标注***（圆区域标注、椭圆区域标注类似）
+> ***矩形标注***（圆形区域标注、椭圆形区域标注类似）
 ```python
     {
       "x": -184.21450151057402,
@@ -193,12 +194,14 @@ ellipse_arc = 6
       "raws": []  # 未放到组中的数据
     }
 ```
-
----
+#### 注意
+* 暂不支持撤销和反撤销
+* 支持讯飞ocr现在识别
+* 对齐速度~~较慢~~ （准备cuda重构）
+* 软件在window 10 平台下开发，并未适配 linux 和 mac
 #### 声明
 * 适合数据标注
 * 适用于学习、科研
----
 #### 联系
 * [jackm](jackmca@163.com)
 * [ieyqin](ieyqin@gs.zzu.edu.cn)

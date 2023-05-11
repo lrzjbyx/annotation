@@ -1,6 +1,4 @@
-
 import os
-
 from PyQt5.QtCore import QStringListModel, pyqtSignal, QPoint, QRectF, Qt, QPointF, QLineF, QObject
 from PyQt5.QtGui import QPixmap, QBrush, QPen, QPainter, QColor, QPainterPath
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QListView, QAbstractItemView, \

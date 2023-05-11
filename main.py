@@ -372,13 +372,14 @@ class GraphicsCircleRrcItem(GraphicsCircleItem):
         """
         r, g, b, a = configure["tag"][4]["color"]
 
+
         #  外围扇形
-        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth/2)/2,self.rect().center().y()-(self.rect().width()+self.lineWidth/2)/2,
-                         self.rect().width()+int(self.lineWidth/2),self.rect().height()+int(self.lineWidth/2))
+        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth)/2,self.rect().center().y()-(self.rect().width()+self.lineWidth)/2,
+                         self.rect().width()+int(self.lineWidth),self.rect().height()+int(self.lineWidth))
 
         #  内测扇形
-        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth/2)/2,self.rect().center().y()-(self.rect().width()-self.lineWidth/2)/2,
-                        self.rect().width()-int(self.lineWidth/2),self.rect().height()-int(self.lineWidth/2))
+        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth)/2,self.rect().center().y()-(self.rect().width()-self.lineWidth)/2,
+                        self.rect().width()-int(self.lineWidth),self.rect().height()-int(self.lineWidth))
 
 
         # 绘制圆弧
@@ -389,7 +390,7 @@ class GraphicsCircleRrcItem(GraphicsCircleItem):
 
         path2 = QPainterPath()
         path2.moveTo(self.rect().center().x(),self.rect().center().y())
-        path2.arcTo(inRect, self.startAngle/16, (self.spanAngle)/16)
+        path2.arcTo(inRect, 0, 360)
         path2.closeSubpath()
         path = path1 - path2
         painter.fillPath(path, QColor(r, g, b, a))
@@ -501,13 +502,14 @@ class GraphicsEllipseRrcItem(GraphicsEllipseItem):
         """
         r, g, b, a = configure["tag"][5]["color"]
 
+
         #  外围扇形
-        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth/2)/2,self.rect().center().y()-(self.rect().height()+self.lineWidth/2)/2,
-                         self.rect().width()+int(self.lineWidth/2),self.rect().height()+int(self.lineWidth/2))
+        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth)/2,self.rect().center().y()-(self.rect().width()+self.lineWidth)/2,
+                         self.rect().width()+int(self.lineWidth),self.rect().height()+int(self.lineWidth))
 
         #  内测扇形
-        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth/2)/2,self.rect().center().y()-(self.rect().height()-self.lineWidth/2)/2,
-                        self.rect().width()-int(self.lineWidth/2),self.rect().height()-int(self.lineWidth/2))
+        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth)/2,self.rect().center().y()-(self.rect().width()-self.lineWidth)/2,
+                        self.rect().width()-int(self.lineWidth),self.rect().height()-int(self.lineWidth))
 
 
         # 绘制圆弧
@@ -516,16 +518,11 @@ class GraphicsEllipseRrcItem(GraphicsEllipseItem):
         path1.arcTo(outRect, self.startAngle/16, (self.spanAngle)/16)
         path1.closeSubpath()
 
+
         path2 = QPainterPath()
-        path2.moveTo(self.rect().center().x(),self.rect().center().y())
-        path2.arcTo(inRect, self.startAngle/16, (self.spanAngle)/16)
+        path2.addEllipse(inRect)
         path2.closeSubpath()
-
-
-        path3 = QPainterPath()
-        path3.addEllipse(inRect)
-        path3.closeSubpath()
-        path = path1 - path2 - path3
+        path = path1 - path2
         painter.fillPath(path, QColor(r, g, b, a))
 
 
