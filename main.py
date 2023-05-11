@@ -3,9 +3,9 @@ import os
 
 import numpy as np
 from PyQt5.QtCore import QStringListModel, pyqtSignal, QPoint, QRectF, Qt, QPointF, QLineF, QObject, QEvent, \
-    QItemSelectionModel, QModelIndex, QSize
+    QItemSelectionModel, QModelIndex, QSize, QUrl
 from PyQt5.QtGui import QPixmap, QBrush, QPen, QPainter, QColor, QPainterPath, QImage, QIcon, QStandardItemModel, \
-    QStandardItem, QMouseEvent, QKeySequence, QConicalGradient, QLinearGradient
+    QStandardItem, QMouseEvent, QKeySequence, QConicalGradient, QLinearGradient, QDesktopServices
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton, QListView, QAbstractItemView, \
     QGraphicsEllipseItem, QGraphicsItem, QGraphicsRectItem, QSlider, QHeaderView, QTreeWidgetItem, QLabel, QHBoxLayout, \
     QComboBox, QLineEdit, QTreeWidget, QTableWidgetItem, QTableWidget, QGraphicsScene, QMenu, QGraphicsView, \
@@ -1204,7 +1204,7 @@ class AnnotationWindow(QWidget):
         self.pushButton_3.setShortcut(QKeySequence.Redo)
 
         # help
-        self.pushButton_18.clicked.connect(lambda x:print(x))
+        self.pushButton_18.clicked.connect(lambda x:QDesktopServices.openUrl(QUrl("https://github.com/lrzjbyx/annotation")))
         self.pushButton_18.setIconSize(QSize(24, 24))
         self.pushButton_18.setIcon(QIcon("res/help.png"))
         self.pushButton_18.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
