@@ -49,7 +49,7 @@ configure = {
     "image_format":["bmp","jpg","png","tif","jfif"],
     "align_height":600, 
     "align_width":180,
-    # 讯飞ocr模型
+    # 百度ocr模型
     "cls_model_dir":"model/ch_ppocr_mobile_v2.0_cls_infer",
     "det_model_dir":"model/ch_PP-OCRv3_det_infer",
     "rec_model_dir":"model/ch_PP-OCRv3_rec_infer"  
@@ -196,7 +196,7 @@ ellipse_arc = 6
 ```
 #### 注意
 * 暂不支持撤销和反撤销
-* 支持讯飞ocr现在识别
+* 支持百度ocr现在识别
 * 对齐速度~~较慢~~ （准备cuda重构）
 * 软件在window 10 平台下开发，并未适配 linux 和 mac
 #### 声明
