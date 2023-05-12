@@ -14,9 +14,8 @@ pip install -r requirements.txt
 ```
 
 #### 案例
-<video id="video" controls="" preload="none" poster="封面">
-      <source id="mp4" src="./demo/demo.mp4" type="video/mp4">
-</videos>
+
+<iframe src="./demo/demo.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 #### 配置
 > 配置文件在config中
