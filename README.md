@@ -13,10 +13,6 @@ conda activate paint
 pip install -r requirements.txt
 ```
 
-#### 案例
-
-<iframe src="./demo/demo.mp4" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-
 #### 配置
 > 配置文件在config中
 ```python
