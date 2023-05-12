@@ -12,6 +12,12 @@ conda create -n paint python==3.8
 conda activate paint
 pip install -r requirements.txt
 ```
+
+#### 案例
+<video id="video" controls="" preload="none" poster="封面">
+      <source id="mp4" src="./demo/demo.mp4" type="video/mp4">
+</videos>
+
 #### 配置
 > 配置文件在config中
 ```python
@@ -199,6 +205,7 @@ ellipse_arc = 6
 * 支持百度ocr文字识别
 * 对齐速度~~较慢~~ （准备cuda重构）
 * 软件在window 10 平台下开发，并未适配 linux 和 mac
+* 标注文件采取一个编码方式 如  *.png | *.jpg | *.bmp
 #### 声明
 * 适合数据标注
 * 适用于学习、科研
