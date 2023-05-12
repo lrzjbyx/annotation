@@ -13,6 +13,12 @@ conda activate paint
 pip install -r requirements.txt
 ```
 
+#### 案例
+<video id="video" controls="" preload="none">
+    <source id="mp4" src="./demo/demo.mp4" type="video/mp4">
+</video>
+
+
 #### 配置
 > 配置文件在config中
 ```python
