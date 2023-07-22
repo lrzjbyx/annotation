@@ -504,11 +504,11 @@ class GraphicsEllipseRrcItem(GraphicsEllipseItem):
 
 
         #  外围扇形
-        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth)/2,self.rect().center().y()-(self.rect().width()+self.lineWidth)/2,
+        outRect = QRectF(self.rect().center().x()-(self.rect().width()+self.lineWidth)/2,self.rect().center().y()-(self.rect().height()+self.lineWidth)/2,
                          self.rect().width()+int(self.lineWidth),self.rect().height()+int(self.lineWidth))
 
         #  内测扇形
-        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth)/2,self.rect().center().y()-(self.rect().width()-self.lineWidth)/2,
+        inRect = QRectF(self.rect().center().x()-(self.rect().width()-self.lineWidth)/2,self.rect().center().y()-(self.rect().height()-self.lineWidth)/2,
                         self.rect().width()-int(self.lineWidth),self.rect().height()-int(self.lineWidth))
 
 
@@ -783,10 +783,14 @@ class PhotoViewer(QtWidgets.QGraphicsView):
                 item.setTransformOriginPoint(item.boundingRect().center().x(),item.boundingRect().center().y())
                 item.setRotation(value)
                 item.angle = value
+                # item.update()
         else:
             item.setTransformOriginPoint(item.boundingRect().center().x(), item.boundingRect().center().y())
             item.setRotation(value)
             item.angle = value
+            # item.update()
+
+
 
 
     def tuneRatationAngle(self,value):

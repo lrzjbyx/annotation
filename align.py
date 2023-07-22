@@ -51,7 +51,7 @@ class Align:
         x0 = item["rect"][2] / 2 + item["x"] + item["rect"][0]
         y0 = item["rect"][3] / 2 + +item["y"] + item["rect"][1]
         h = item["h"]
-        t = item["rotation"]
+        t = item["rotation"]/16
 
         hh = np.linspace(-h / 2, h / 2, self.h)
         ll = np.linspace(-l / 2, l / 2, w)
@@ -71,7 +71,7 @@ class Align:
         return self.canvas
 
     def arc_align(self,image, item):
-
+        ro = math.radians(item["rotation"] / 16)
         start_angle = math.radians(item["startAngle"] / 16)
         span_angle = math.radians(item["spanAngle"] / 16)
 
@@ -87,7 +87,6 @@ class Align:
         xx = np.linspace(start_angle, start_angle + span_angle, w)
         aa = np.linspace(item["a"] - (item["h"] / 2), item["a"] + (item["h"] / 2), self.h)[::-1]
         bb = np.linspace(item["b"] - (item["h"] / 2), item["b"] + (item["h"] / 2), self.h)[::-1]
-        ro = math.radians(math.degrees(item["rotation"] / 16))
 
 
 
@@ -114,8 +113,12 @@ class Align:
         la = item["la"]
         mu = item["mu"]
 
+
+
+        item["rotation"] = item["rotation"]*16
         if la == 1:
             return self.arc_align(image,item)
         elif mu == 1:
             return self.line_align(image,item)
 
+# 天锡美永星影视文化艺作室
