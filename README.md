@@ -73,7 +73,7 @@ configure = {
 
 
 #### 截图
-![工具](pic/readme.jpg)
+![工具](pic/ann_demo.png)
 
 
 ----

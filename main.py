@@ -1039,6 +1039,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
 
         filename = os.path.join(self.parent.output_directory,"{0}.json".format(os.path.basename(self.parent.filenames[self.parent.listWidget.currentIndex().row()]).split ('.') [ 0 ]))
         print(filename)
+        print(result)
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(json.dumps(result, ensure_ascii=False))
 
@@ -1064,7 +1065,8 @@ class PhotoViewer(QtWidgets.QGraphicsView):
                 scenerect = self.transform().mapRect(rect)
                 factor = min(viewrect.width() / scenerect.width(),
                              viewrect.height() / scenerect.height())
-                self.scale(factor*0.5, factor*0.5)
+                self.scale(factor*1, factor*1)
+                # self.scale(factor*0.8, factor*0.5)
             self._zoom = 0
 
     def setPhoto(self, pixmap=None):
@@ -1106,7 +1108,7 @@ class AnnotationWindow(QWidget):
 
     def __init__(self, parent=None):
         super(AnnotationWindow, self).__init__(parent)
-        loadUi("./ui/main.ui", self)
+        loadUi("./ui/mainback.ui", self)
 
 
         # align
@@ -1277,8 +1279,8 @@ class AnnotationWindow(QWidget):
         # 绑定事件
         self.tableWidget_6.customContextMenuRequested.connect(self.areaMenu)
 
-        # 线条标注
-        self.tableWidget_7 = tableGraphicsWidget(header=["线条标注"],parent=self)
+        # 实例标注
+        self.tableWidget_7 = tableGraphicsWidget(header=["实例标注"],parent=self)
         tableLayout_7 =  QHBoxLayout()
         tableLayout_7.addWidget(self.tableWidget_7)
         tableLayout_7.setContentsMargins(0,0,0,0)

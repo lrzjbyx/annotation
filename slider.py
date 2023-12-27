@@ -125,6 +125,8 @@ class slider(QWidget):
         xx = QPixmap(utils.ndConvertQpixmap(image)).scaled(QSize(235,73),Qt.KeepAspectRatio,Qt.SmoothTransformation)
         self.image_align.setPixmap(xx)
 
+        cv2.imwrite("1.png",image)
+
         result = self.item.parent.parent.paddle.ocr(image)
 
         label_str = ""
