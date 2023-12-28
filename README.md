@@ -15,6 +15,12 @@ pip install -r requirements.txt
 ```
 
 
+#### 案例
+```python
+demo/demo.mp4
+```
+
+
 #### 配置
 > 配置文件在config中
 ```python
@@ -201,7 +207,8 @@ ellipse_arc = 6
 * 非敏感数据
 [google drive](https://drive.google.com/drive/folders/1ILgx2YovAHAsmCs-H-S_G2CsIaVgMjT3?usp=sharing)
 
-
+#### 模型
+* SegloNet代码整理中 
 
 
 #### 注意
