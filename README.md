@@ -1,4 +1,4 @@
-![ann_demo](https://github.com/lrzjbyx/annotation/assets/48800951/440ff75b-4cd0-48d9-8d73-30fe69b5e0cf)# annotation
+# annotation
 数据标注工具（矩形衍生标注）
 
 ---
@@ -6,15 +6,13 @@
 ```python
 python main.py
 ```
+
 #### 安装
 ```python
 conda create -n paint python==3.8
 conda activate paint
 pip install -r requirements.txt
 ```
-
-#### 案例
-![ann_demo](https://github.com/lrzjbyx/annotation/assets/48800951/a625763d-1563-4165-bc08-617cf007ee40)
 
 
 #### 配置
