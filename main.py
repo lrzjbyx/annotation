@@ -1108,7 +1108,8 @@ class AnnotationWindow(QWidget):
 
     def __init__(self, parent=None):
         super(AnnotationWindow, self).__init__(parent)
-        loadUi("./ui/mainback.ui", self)
+        loadUi("./ui/main.ui", self)
+        # loadUi("./ui/main_en.ui", self)
 
 
         # align

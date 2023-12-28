@@ -73,7 +73,7 @@ configure = {
 
 
 #### 截图
-![工具](pic/ann_demo.png)
+![工具](demo/ann_demo.png)
 
 
 ----
@@ -201,6 +201,13 @@ ellipse_arc = 6
       "raws": []  # 未放到组中的数据
     }
 ```
+#### 数据集样例    
+* 非敏感数据
+* [google drive](https://drive.google.com/drive/folders/1ILgx2YovAHAsmCs-H-S_G2CsIaVgMjT3?usp=sharing)
+
+
+
+
 #### 注意
 * 暂不支持撤销和反撤销
 * 支持百度ocr文字识别
