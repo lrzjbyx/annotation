@@ -214,7 +214,7 @@ ellipse_arc = 6
 #### 注意
 * 暂不支持撤销和反撤销
 * 支持百度ocr文字识别
-* 对齐速度~~较慢~~ （已重构 [align](https://github.com/lrzjbyx/align)）
+* 对齐速度~~较慢~~ （已cuda重构 [align](https://github.com/lrzjbyx/align)）
 * 软件在window 10 平台下开发，并未适配 linux 和 mac
 * 标注文件采取一个编码方式 如  *.png | *.jpg | *.bmp
 #### 声明
